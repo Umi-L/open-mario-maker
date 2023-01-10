@@ -76,13 +76,14 @@ func init() {
 	player = Player{ecs.NewBasic(), marioSwimmingAnimation, geometry.NewEmptyTransform(), physics.NewEmptyVelocity()}
 
 	//map def
-	mapdata, err := res.ReadFile("resources/testmap.csv")
+	mapdata, err := res.ReadFile("resources/testmap2.json")
+
 
 	if err != nil{
 		log.Fatal(err)
 	}
 
-	testmap = tiled.ParseCsv(string(mapdata), tilemapSheet)
+	testmap = tiled.ParseJson(mapdata, tilemapSheet)
 
 	//Loop over all Systems
 	for _, system := range world.Systems() {
