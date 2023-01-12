@@ -14,11 +14,31 @@ type Element struct { //elements are just Containers with drawables
 }
 
 func (e Element) Draw(screen ebiten.Image){
-	utils.DrawImageAtRect(&screen, &e.Image, e.rect, &ebiten.DrawImageOptions{})
+	utils.DrawImageAtRect(&screen, &e.Image, e.Rect, &ebiten.DrawImageOptions{})
 
 	log.Print("guidrawcall")
+}
+func (e Element) DrawTree(screen ebiten.Image){
+	for _, child := range e.children{
+		Draw(e, screen)
+		child.DrawTree(screen)
+	}
+}
+func (e Element) CalculateRect(){
+	Defaults.CalculateRect(e)
+}
+func (e Element) GetContainer() Container{
+	return e.Container
+}
+
+func (e Element) SetParent(parent Container) {
+	e.Parent = &parent
 }
 
 type ElementInterface interface {
 	Draw(screen ebiten.Image)
+	DrawTree(screen ebiten.Image)
+	CalculateRect()
+	SetParent(parent Container)
+	GetContainer() Container
 }

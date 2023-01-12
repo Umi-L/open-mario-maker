@@ -148,7 +148,7 @@ func main() {
 	elm := gui.Element{}
 	elm.Image = *charSheet.Texture
 
-	game.Gui.AddChild(&elm.Container)
+	game.Gui.AddChild(elm)
 
 	//run game and handle errors
 	if err := ebiten.RunGame(&game); err != nil {
