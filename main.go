@@ -114,6 +114,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	//player.Draw(screen, 0.0, 0.0, 0.0)
 
+	//get animation system and run draw
 	systems[AnimationUpdate].(*animation.UpdateSystem).Draw(screen)
 
 	tiled.DrawMap(screen, testmap)
