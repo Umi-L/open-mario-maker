@@ -17,6 +17,12 @@ func GetDt() func() time.Duration {
 	}
 }
 
-func DrawImageAtRect(screen ebiten.Image, image ebiten.Image, rect Rect){
+func DrawImageAtRect(screen *ebiten.Image, image *ebiten.Image, rect Rect, op *ebiten.DrawImageOptions){
+	sw, sh := screen.Size()
+	iw, ih := image.Size()
 
+
+	op.GeoM.Scale(float64(sw / iw), float64(sh / ih))
+
+	screen.DrawImage(image, op)
 }

@@ -25,6 +25,17 @@ func (c *Container) AddChild(child *Container){
 	child.calculateRect()
 }
 
+func (c *Container) Draw(screen ebiten.Image){}
+
+func (c *Container) DrawTree(screen ebiten.Image){
+	for _, child := range c.children{
+		Draw(c, screen)
+		child.DrawTree(screen)
+	}
+}
+
+
+
 func (c *Container) calculateRect(){
 
 
@@ -71,9 +82,7 @@ func NewRelativeContainer(parent *Container) Container{
 	return newContainer
 }
 
-func NewRootContainer(screen ebiten.Image) Container{
-
-	screenW, screenH := screen.Size()
+func NewRootContainer(screenW int, screenH int) Container{
 
 	return Container{
 		rect: Rect{

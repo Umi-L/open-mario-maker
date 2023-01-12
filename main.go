@@ -7,6 +7,7 @@ import (
 
 	"github.com/umi-l/open-mario-maker/animation"
 	"github.com/umi-l/open-mario-maker/geometry"
+	"github.com/umi-l/open-mario-maker/gui"
 	"github.com/umi-l/open-mario-maker/loader"
 	"github.com/umi-l/open-mario-maker/physics"
 	"github.com/umi-l/open-mario-maker/tiled"
@@ -102,17 +103,25 @@ func init() {
 	}
 }
 
-type Game struct{}
+type Game struct{
+	Gui gui.Container
+}
 
 // mainloop
 func (g *Game) Update() error {
 	world.Update(float32(dt().Seconds()))
+
 	return nil
 }
 
 // draw
 func (g *Game) Draw(screen *ebiten.Image) {
 	//player.Draw(screen, 0.0, 0.0, 0.0)
+
+	w, h := screen.Size()
+
+	g.Gui.SetTransform(gui.Transform{X:0, Y: 0, W: float32(w), H: float32(h)})
+	g.Gui.DrawTree(*screen)
 
 	//get animation system and run draw
 	systems[AnimationUpdate].(*animation.UpdateSystem).Draw(screen)
@@ -134,8 +143,15 @@ func main() {
 	//title
 	ebiten.SetWindowTitle("Open Mario Maker")
 
+	game := Game{}
+
+	elm := gui.Element{}
+	elm.Image = *charSheet.Texture
+
+	game.Gui.AddChild(&elm.Container)
+
 	//run game and handle errors
-	if err := ebiten.RunGame(&Game{}); err != nil {
+	if err := ebiten.RunGame(&game); err != nil {
 		log.Fatal(err)
 	}
 }
