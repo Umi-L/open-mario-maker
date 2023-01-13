@@ -1,5 +1,7 @@
 package gui
 
+import "github.com/hajimehoshi/ebiten/v2"
+
 type Transform struct {
 	//absolute pixel values
 	X float32
@@ -12,4 +14,11 @@ type Transform struct {
 	YPercent float32
 	WPercent float32
 	HPercent float32
+}
+
+func MakeTransformWithImage(image *ebiten.Image) Transform {
+	return Transform{
+		W: float32(image.Bounds().Max.X),
+		H: float32(image.Bounds().Max.Y),
+	}
 }

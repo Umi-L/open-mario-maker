@@ -18,11 +18,10 @@ func GetDt() func() time.Duration {
 }
 
 func DrawImageAtRect(screen *ebiten.Image, image *ebiten.Image, rect Rect, op *ebiten.DrawImageOptions){
-	sw, sh := screen.Size()
+	//sw, sh := screen.Size()
 	iw, ih := image.Size()
 
-
-	op.GeoM.Scale(float64(sw / iw), float64(sh / ih))
+	op.GeoM.Scale(float64(iw) / float64(rect.W), float64(ih) / float64(rect.H))
 
 	screen.DrawImage(image, op)
 }

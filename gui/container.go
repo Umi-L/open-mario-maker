@@ -29,11 +29,12 @@ func (c Container) SetParent(parent Container){
 	c.Parent = &parent
 }
 
-func (c Container) Draw(screen ebiten.Image){}
+func (c Container) Draw(screen *ebiten.Image){}
 
-func (c Container) DrawTree(screen ebiten.Image){
+func (c Container) DrawTree(screen *ebiten.Image){
 	for _, child := range c.children{
-		Draw(c, screen)
+
+		Draw(child, screen)
 		child.DrawTree(screen)
 	}
 }
@@ -44,7 +45,7 @@ func (c Container) GetContainer() Container{
 
 
 func (c Container) CalculateRect(){
-	Defaults.CalculateRect(c)
+	c.Rect = Defaults.CalculateRect(c)
 }
 
 func NewRelativeContainer(parent *Container) Container{

@@ -18,6 +18,7 @@ import (
 
 	"github.com/EngoEngine/ecs"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 var world ecs.World
@@ -28,6 +29,8 @@ var dt func() time.Duration = utils.GetDt()
 
 var charSheet loader.Sheet
 var tilemapSheet loader.Sheet
+
+var playButtonImage *ebiten.Image
 
 var marioSwimmingAnimation animation.Animation
 
@@ -56,6 +59,13 @@ func init() {
 	marioSwimmingAnimation = animation.Load(&charSheet, 0, 5, 0.1)
 
 	tilemapSheet = loader.LoadSheet("resources/tilemap.png", 16, 16)
+
+	var err error
+	playButtonImage, _, err = ebitenutil.NewImageFromFile("resources/MarioPlayButton.png")
+
+	if err != nil{
+		log.Fatal(err)
+	}
 
 	//ecs
 	world = ecs.World{}
@@ -121,12 +131,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	w, h := screen.Size()
 
 	g.Gui.SetTransform(gui.Transform{X:0, Y: 0, W: float32(w), H: float32(h)})
-	g.Gui.DrawTree(*screen)
 
 	//get animation system and run draw
 	systems[AnimationUpdate].(*animation.UpdateSystem).Draw(screen)
 
 	tiled.DrawMap(screen, testmap)
+
+	//draw GUI
+	g.Gui.DrawTree(screen)
 }
 
 // internal resolution
@@ -145,10 +157,16 @@ func main() {
 
 	game := Game{}
 
-	elm := gui.Element{}
-	elm.Image = *charSheet.Texture
+	elm := gui.MakeElement(playButtonImage)
 
-	game.Gui.AddChild(elm)
+	game.Gui.AddChild(&elm)
+
+	trans := gui.MakeTransformWithImage(playButtonImage)
+
+	trans.XPercent = 50
+	trans.YPercent = 50
+
+	elm.SetTransform(trans)
 
 	//run game and handle errors
 	if err := ebiten.RunGame(&game); err != nil {

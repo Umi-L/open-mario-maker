@@ -10,23 +10,41 @@ import (
 type Element struct { //elements are just Containers with drawables
 	Container
 
-	Image ebiten.Image
+	Image *ebiten.Image
+
+	initialized bool
 }
 
-func (e Element) Draw(screen ebiten.Image){
-	utils.DrawImageAtRect(&screen, &e.Image, e.Rect, &ebiten.DrawImageOptions{})
+func (e *Element) Init(){
+	e.Transform = MakeTransformWithImage(e.Image)
+	e.CalculateRect()
 
-	log.Print("guidrawcall")
+	e.initialized = true
 }
-func (e Element) DrawTree(screen ebiten.Image){
+
+func (e Element) checkInitialized(){
+	if !e.initialized {
+		log.Fatal("Element is not initialized; this may cause unexpected behaviour and as such is an error. Call element.Init() to fix this.")
+	}
+}
+
+func (e Element) Draw(screen *ebiten.Image){
+	e.checkInitialized()
+
+	utils.DrawImageAtRect(screen, e.Image, e.Rect, &ebiten.DrawImageOptions{})
+}
+
+func (e Element) DrawTree(screen *ebiten.Image){
 	for _, child := range e.children{
-		Draw(e, screen)
+		Draw(&e, screen)
 		child.DrawTree(screen)
 	}
 }
-func (e Element) CalculateRect(){
-	Defaults.CalculateRect(e)
+
+func (e *Element) CalculateRect(){
+	e.Rect = Defaults.CalculateRect(e)
 }
+
 func (e Element) GetContainer() Container{
 	return e.Container
 }
@@ -35,9 +53,15 @@ func (e Element) SetParent(parent Container) {
 	e.Parent = &parent
 }
 
+func MakeElement(image *ebiten.Image) Element{
+	elm := Element{Image: image}
+	elm.Init()
+	return elm
+}
+
 type ElementInterface interface {
-	Draw(screen ebiten.Image)
-	DrawTree(screen ebiten.Image)
+	Draw(screen *ebiten.Image)
+	DrawTree(screen *ebiten.Image)
 	CalculateRect()
 	SetParent(parent Container)
 	GetContainer() Container
