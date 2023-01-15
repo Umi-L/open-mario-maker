@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -43,14 +44,15 @@ func (e Element) DrawTree(screen *ebiten.Image){
 
 func (e *Element) CalculateRect(){
 	e.Rect = Defaults.CalculateRect(e)
+	fmt.Print(Defaults.CalculateRect(e), "\n")
 }
 
 func (e Element) GetContainer() Container{
 	return e.Container
 }
 
-func (e Element) SetParent(parent Container) {
-	e.Parent = &parent
+func (e *Element) SetParent(parent *Container) {
+	e.Parent = parent
 }
 
 func MakeElement(image *ebiten.Image) Element{
@@ -63,6 +65,6 @@ type ElementInterface interface {
 	Draw(screen *ebiten.Image)
 	DrawTree(screen *ebiten.Image)
 	CalculateRect()
-	SetParent(parent Container)
+	SetParent(parent *Container)
 	GetContainer() Container
 }

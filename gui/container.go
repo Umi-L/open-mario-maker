@@ -21,12 +21,12 @@ func (c *Container) SetTransform(t Transform){
 
 func (c *Container) AddChild(child ElementInterface){
 	c.children = append(c.children, child)
-	child.SetParent(*c)
+	child.SetParent(c)
 	child.CalculateRect()
 }
 
-func (c Container) SetParent(parent Container){
-	c.Parent = &parent
+func (c *Container) SetParent(parent *Container){
+	c.Parent = parent
 }
 
 func (c Container) Draw(screen *ebiten.Image){}
@@ -44,7 +44,7 @@ func (c Container) GetContainer() Container{
 }
 
 
-func (c Container) CalculateRect(){
+func (c *Container) CalculateRect(){
 	c.Rect = Defaults.CalculateRect(c)
 }
 
@@ -53,7 +53,7 @@ func NewRelativeContainer(parent *Container) Container{
 		Parent: parent,
 	}
 
-	parent.children = append(parent.children, newContainer)
+	parent.children = append(parent.children, &newContainer)
 
 	return newContainer
 }

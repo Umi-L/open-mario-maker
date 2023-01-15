@@ -22,6 +22,7 @@ func DrawImageAtRect(screen *ebiten.Image, image *ebiten.Image, rect Rect, op *e
 	iw, ih := image.Size()
 
 	op.GeoM.Scale(float64(iw) / float64(rect.W), float64(ih) / float64(rect.H))
+	op.GeoM.Translate(float64(rect.X), float64(rect.Y))
 
 	screen.DrawImage(image, op)
 }

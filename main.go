@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	_ "image/png"
 	"log"
 	"time"
@@ -163,10 +164,13 @@ func main() {
 
 	trans := gui.MakeTransformWithImage(playButtonImage)
 
-	trans.XPercent = 50
-	trans.YPercent = 50
+	trans.XPercent = 0.5
+	trans.YPercent = 0.5
+	trans.WPercent = 1
 
 	elm.SetTransform(trans)
+
+	fmt.Printf("%+v\n", elm)
 
 	//run game and handle errors
 	if err := ebiten.RunGame(&game); err != nil {
