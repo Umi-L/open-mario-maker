@@ -9,6 +9,8 @@ import (
 	"github.com/umi-l/open-mario-maker/animation"
 	"github.com/umi-l/open-mario-maker/geometry"
 	"github.com/umi-l/open-mario-maker/gui"
+	"github.com/umi-l/open-mario-maker/gui_elements"
+	"github.com/umi-l/open-mario-maker/gui_update_params"
 	"github.com/umi-l/open-mario-maker/loader"
 	"github.com/umi-l/open-mario-maker/physics"
 	"github.com/umi-l/open-mario-maker/tiled"
@@ -64,7 +66,7 @@ func init() {
 	var err error
 	playButtonImage, _, err = ebitenutil.NewImageFromFile("resources/MarioPlayButton.png")
 
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -90,8 +92,7 @@ func init() {
 	//map def
 	mapdata, err := res.ReadFile("resources/testmap2.json")
 
-
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -114,13 +115,15 @@ func init() {
 	}
 }
 
-type Game struct{
+type Game struct {
 	Gui gui.Container
 }
 
 // mainloop
 func (g *Game) Update() error {
 	world.Update(float32(dt().Seconds()))
+
+	g.Gui.Update(gui_update_params.UpdateParams{})
 
 	return nil
 }
@@ -131,7 +134,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	w, h := screen.Size()
 
-	g.Gui.SetTransform(gui.Transform{X:0, Y: 0, W: float32(w), H: float32(h)})
+	g.Gui.SetTransform(gui.Transform{X: 0, Y: 0, W: float32(w), H: float32(h)})
 
 	//get animation system and run draw
 	systems[AnimationUpdate].(*animation.UpdateSystem).Draw(screen)
@@ -158,15 +161,17 @@ func main() {
 
 	game := Game{}
 
-	elm := gui.MakeElement(playButtonImage)
+	elm := gui_elements.NewButton(playButtonImage, func(params gui_update_params.ButtonUpdateParams) {
+		fmt.Println("Button Clicked")
+	})
 
 	game.Gui.AddChild(&elm)
 
-	trans := gui.MakeTransformWithImage(playButtonImage)
+	trans := gui.MakeTransformWithImage(playButtonImage, gui.OriginCenter)
 
 	trans.XPercent = 0.5
 	trans.YPercent = 0.5
-	trans.WPercent = 1
+	//trans.WPercent = 1
 
 	elm.SetTransform(trans)
 

@@ -14,11 +14,15 @@ type Transform struct {
 	YPercent float32
 	WPercent float32
 	HPercent float32
+
+	Origin Origin
 }
 
-func MakeTransformWithImage(image *ebiten.Image) Transform {
+func MakeTransformWithImage(image *ebiten.Image, origin OriginIndex) Transform {
 	return Transform{
 		W: float32(image.Bounds().Max.X),
 		H: float32(image.Bounds().Max.Y),
+
+		Origin: Origin{OriginIndex: origin},
 	}
 }

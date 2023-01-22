@@ -2,53 +2,57 @@ package gui
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/umi-l/open-mario-maker/gui_update_params"
 	. "github.com/umi-l/open-mario-maker/types"
 )
 
 type Container struct {
 	Parent *Container
-	Rect Rect
+	Rect   Rect
 
 	Transform Transform
 
 	children []ElementInterface
 }
 
-func (c *Container) SetTransform(t Transform){
+func (c *Container) SetTransform(t Transform) {
 	c.Transform = t
 	c.CalculateRect()
 }
 
-func (c *Container) AddChild(child ElementInterface){
+func (c *Container) AddChild(child ElementInterface) {
 	c.children = append(c.children, child)
 	child.SetParent(c)
 	child.CalculateRect()
 }
 
-func (c *Container) SetParent(parent *Container){
+func (c *Container) SetParent(parent *Container) {
 	c.Parent = parent
 }
 
-func (c Container) Draw(screen *ebiten.Image){}
+func (c Container) Draw(screen *ebiten.Image) {}
 
-func (c Container) DrawTree(screen *ebiten.Image){
-	for _, child := range c.children{
+func (c *Container) Update(params gui_update_params.UpdateParams) {
+	Defaults.UpdateChildren(c, params)
+}
+
+func (c Container) DrawTree(screen *ebiten.Image) {
+	for _, child := range c.children {
 
 		Draw(child, screen)
 		child.DrawTree(screen)
 	}
 }
 
-func (c Container) GetContainer() Container{
+func (c Container) GetContainer() Container {
 	return c
 }
 
-
-func (c *Container) CalculateRect(){
+func (c *Container) CalculateRect() {
 	c.Rect = Defaults.CalculateRect(c)
 }
 
-func NewRelativeContainer(parent *Container) Container{
+func NewRelativeContainer(parent *Container) Container {
 	newContainer := Container{
 		Parent: parent,
 	}
@@ -58,7 +62,7 @@ func NewRelativeContainer(parent *Container) Container{
 	return newContainer
 }
 
-func NewRootContainer(screenW int, screenH int) Container{
+func NewRootContainer(screenW int, screenH int) Container {
 
 	return Container{
 		Rect: Rect{
