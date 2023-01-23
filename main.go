@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/umi-l/open-mario-maker/animation"
+	"github.com/umi-l/open-mario-maker/entities"
+	gameui "github.com/umi-l/open-mario-maker/game_ui"
 	"github.com/umi-l/open-mario-maker/geometry"
 	"github.com/umi-l/open-mario-maker/gui"
 	"github.com/umi-l/open-mario-maker/gui_elements"
@@ -26,7 +28,7 @@ import (
 
 var world ecs.World
 
-var player Player
+var player entities.Player
 
 var dt func() time.Duration = utils.GetDt()
 
@@ -36,13 +38,6 @@ var tilemapSheet loader.Sheet
 var playButtonImage *ebiten.Image
 
 var marioSwimmingAnimation animation.Animation
-
-type Player struct {
-	ecs.BasicEntity
-	animation.Animation
-	geometry.Transform
-	physics.Velocity
-}
 
 var systems map[SystemIndex]interface{}
 
@@ -87,7 +82,7 @@ func init() {
 	systems[Gravity] = gravitySystem
 
 	//debug entities
-	player = Player{ecs.NewBasic(), marioSwimmingAnimation, geometry.NewEmptyTransform(), physics.NewEmptyVelocity()}
+	player = entities.Player{BasicEntity: ecs.NewBasic(), Animation: marioSwimmingAnimation, Transform: geometry.NewEmptyTransform(), Velocity: physics.NewEmptyVelocity()}
 
 	//map def
 	mapdata, err := res.ReadFile("resources/testmap2.json")
@@ -116,14 +111,15 @@ func init() {
 }
 
 type Game struct {
-	Gui gui.Container
+	Gui   gameui.GameUI
+	State GameState
 }
 
 // mainloop
 func (g *Game) Update() error {
 	world.Update(float32(dt().Seconds()))
 
-	g.Gui.Update(gui_update_params.UpdateParams{})
+	g.Gui.Root.Update(gui_update_params.UpdateParams{})
 
 	return nil
 }
@@ -134,7 +130,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	w, h := screen.Size()
 
-	g.Gui.SetTransform(gui.Transform{X: 0, Y: 0, W: float32(w), H: float32(h)})
+	g.Gui.Root.SetTransform(gui.Transform{X: 0, Y: 0, W: float32(w), H: float32(h)})
 
 	//get animation system and run draw
 	systems[AnimationUpdate].(*animation.UpdateSystem).Draw(screen)
@@ -142,7 +138,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	tiled.DrawMap(screen, testmap)
 
 	//draw GUI
-	g.Gui.DrawTree(screen)
+	g.Gui.Root.DrawTree(screen)
 }
 
 // internal resolution
@@ -160,22 +156,35 @@ func main() {
 	ebiten.SetWindowTitle("Open Mario Maker")
 
 	game := Game{}
+	game.Gui.Root.Visible = true
 
-	elm := gui_elements.NewButton(playButtonImage, func(params gui_update_params.ButtonUpdateParams) {
+	//--main menu--
+	mainMenu := gui.NewContainer(gui.Transform{X: 0, Y: 0, WPercent: 1, HPercent: 1}, true)
+
+	//play button
+	playButton := gui_elements.NewButton(playButtonImage, func(params gui_update_params.ButtonUpdateParams) {
 		fmt.Println("Button Clicked")
-	})
 
-	game.Gui.AddChild(&elm)
+	})
 
 	trans := gui.MakeTransformWithImage(playButtonImage, gui.OriginCenter)
 
 	trans.XPercent = 0.5
 	trans.YPercent = 0.5
-	//trans.WPercent = 1
 
-	elm.SetTransform(trans)
+	//add to main menu
+	mainMenu.AddChild(&playButton)
 
-	fmt.Printf("%+v\n", elm)
+	playButton.SetTransform(trans)
+
+	//add to gui
+	game.Gui.Root.AddChild(&mainMenu)
+
+	fmt.Printf("%+v\n", game.Gui)
+	fmt.Printf("%+v\n", mainMenu)
+	fmt.Printf("%+v\n", playButton)
+
+	//fmt.Printf("%+v\n", playButton)
 
 	//run game and handle errors
 	if err := ebiten.RunGame(&game); err != nil {
