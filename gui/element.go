@@ -15,6 +15,8 @@ type Element struct { //elements are just Containers with drawables
 
 	initialized bool
 
+	name string
+
 	OnClick func()
 }
 
@@ -34,10 +36,18 @@ func (e Element) checkInitialized() {
 func (e Element) Draw(screen *ebiten.Image) {
 	e.checkInitialized()
 
+	if !e.Visible {
+		return
+	}
 	utils.DrawImageAtRect(screen, e.Image, e.Rect, &ebiten.DrawImageOptions{})
 }
 
 func (e Element) DrawTree(screen *ebiten.Image) {
+
+	if !e.Visible {
+		return
+	}
+
 	for _, child := range e.children {
 		Draw(&e, screen)
 		child.DrawTree(screen)
@@ -63,6 +73,9 @@ func (e *Element) SetParent(parent *Container) {
 func MakeElement(image *ebiten.Image) Element {
 	elm := Element{Image: image}
 	elm.Init()
+
+	elm.Visible = true
+
 	return elm
 }
 

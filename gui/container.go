@@ -13,6 +13,8 @@ type Container struct {
 	Transform Transform
 
 	children []ElementInterface
+
+	Visible bool
 }
 
 func (c *Container) SetTransform(t Transform) {
@@ -37,6 +39,11 @@ func (c *Container) Update(params gui_update_params.UpdateParams) {
 }
 
 func (c Container) DrawTree(screen *ebiten.Image) {
+
+	if !c.Visible {
+		return
+	}
+
 	for _, child := range c.children {
 
 		Draw(child, screen)
@@ -52,24 +59,28 @@ func (c *Container) CalculateRect() {
 	c.Rect = Defaults.CalculateRect(c)
 }
 
-func NewRelativeContainer(parent *Container) Container {
-	newContainer := Container{
-		Parent: parent,
-	}
+// func NewRelativeContainer(parent *Container) Container {
+// 	newContainer := Container{
+// 		Parent: parent,
+// 	}
 
-	parent.children = append(parent.children, &newContainer)
+// 	parent.children = append(parent.children, &newContainer)
 
-	return newContainer
-}
+// 	return newContainer
+// }
 
-func NewRootContainer(screenW int, screenH int) Container {
+// func NewRootContainer(screenW int, screenH int) Container {
 
-	return Container{
-		Rect: Rect{
-			X: 0,
-			Y: 0,
-			W: float32(screenW),
-			H: float32(screenH),
-		},
-	}
+// 	return Container{
+// 		Rect: Rect{
+// 			X: 0,
+// 			Y: 0,
+// 			W: float32(screenW),
+// 			H: float32(screenH),
+// 		},
+// 	}
+// }
+
+func NewContainer(Transform Transform, visible bool) Container {
+	return Container{Transform: Transform, Visible: visible}
 }
