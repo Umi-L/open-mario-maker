@@ -12,12 +12,12 @@ type GameUI struct {
 }
 
 type MainMenuUI struct {
-	Root       gui.Container
+	Trunk      gui.Container
 	PlayButton widgets.GuiButton
 }
 
 type EditorUI struct {
-	Root       gui.Container
+	Trunk      gui.Container
 	TopPanel   gui.Element
 	TestButton widgets.GuiButton
 }
