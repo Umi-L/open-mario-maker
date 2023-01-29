@@ -1,7 +1,6 @@
 package animation
 
 import (
-	"fmt"
 	"github.com/EngoEngine/ecs"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/umi-l/open-mario-maker/geometry"
@@ -44,7 +43,5 @@ func (a UpdateSystem) Update(dt float32) {
 func (a UpdateSystem) Draw(screen *ebiten.Image) {
 	for _, entity := range a.Entities {
 		entity.Draw(screen, entity.Transform.Position.X, entity.Transform.Position.Y, entity.Transform.Rotation)
-		fmt.Printf("entity drawing: %+v\n", entity.Transform)
 	}
-	fmt.Print("Drawing done \n")
 }

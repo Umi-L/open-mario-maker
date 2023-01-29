@@ -1,11 +1,14 @@
 package main
 
 import (
+	"image/color"
 	_ "image/png"
 	"log"
 	"time"
 
 	"embed"
+	"github.com/EngoEngine/ecs"
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/umi-l/open-mario-maker/animation"
 	"github.com/umi-l/open-mario-maker/entities"
 	gameui "github.com/umi-l/open-mario-maker/game_ui"
@@ -15,10 +18,6 @@ import (
 	. "github.com/umi-l/open-mario-maker/types"
 	"github.com/umi-l/open-mario-maker/utils"
 	"github.com/umi-l/waloader"
-	"github.com/umi-l/yosui-ui/gui"
-
-	"github.com/EngoEngine/ecs"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var world ecs.World
@@ -35,27 +34,7 @@ var testmap tiled.Map
 var res embed.FS
 
 // init
-func (g *Game) init() {
-
-	//systems map
-	systems = make(map[SystemIndex]interface{})
-
-	//ecs
-	world = ecs.World{}
-
-	//systems
-	animationUpdateSystem := &animation.UpdateSystem{}
-	world.AddSystem(animationUpdateSystem)
-	systems[AnimationUpdate] = animationUpdateSystem
-
-	ForcesSystem := &physics.ForcesSystem{}
-	world.AddSystem(ForcesSystem)
-	systems[Forces] = ForcesSystem
-
-	gravitySystem := &physics.GravitySystem{}
-	world.AddSystem(gravitySystem)
-	systems[Gravity] = gravitySystem
-
+func (game *Game) init() {
 	//debug entities
 	player = entities.Player{BasicEntity: ecs.NewBasic(), Animation: marioSwimmingAnimation, Transform: geometry.NewEmptyTransform(), Velocity: physics.NewEmptyVelocity()}
 
@@ -92,41 +71,44 @@ type Game struct {
 }
 
 // mainloop
-func (g *Game) Update() error {
+func (game *Game) Update() error {
 	world.Update(float32(dt().Seconds()))
 
-	g.Gui.Root.Update()
+	game.Gui.Root.Update()
 
 	return nil
 }
 
 // draw
-func (g *Game) Draw(screen *ebiten.Image) {
-	//player.Draw(screen, 0.0, 0.0, 0.0)
+func (game *Game) Draw(screen *ebiten.Image) {
 
-	w, h := screen.Size()
-
-	g.Gui.Root.SetTransform(gui.Transform{X: 0, Y: 0, W: float32(w), H: float32(h)})
+	// draw background color
+	screen.Fill(color.RGBA{
+		R: 97,
+		G: 133,
+		B: 251,
+		A: 255,
+	})
 
 	//get animation system and run draw
 	systems[AnimationUpdate].(*animation.UpdateSystem).Draw(screen)
 
 	tiled.DrawMap(screen, testmap)
 
-	//draw GUI
-	g.Gui.Root.DrawTree(screen)
+	game.drawUi(screen)
 }
 
 // internal resolution
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
+func (game *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+	return 426, 240
 }
 
 // entrypoint
 func main() {
 
 	//external resolution
-	ebiten.SetWindowSize(640, 480)
+	//ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowSize(1280, 720)
 
 	//title
 	ebiten.SetWindowTitle("Open Mario Maker")
@@ -136,7 +118,8 @@ func main() {
 
 	//init all
 	game.InitAssets()
-	game.init()
+	//game.init()
+	game.initECS()
 	game.initUI()
 
 	//run game and handle errors
