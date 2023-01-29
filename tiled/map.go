@@ -1,20 +1,22 @@
 package tiled
 
-import "github.com/umi-l/open-mario-maker/loader"
+import (
+	"github.com/umi-l/waloader"
+)
 
 type Map struct {
-	Sheet loader.Sheet
-	TileLayers  []TileLayer
+	Sheet      waloader.Sheet
+	TileLayers []TileLayer
 }
 
 type TileLayer struct {
 	TileData []int
-	
-	width int
+
+	width  int
 	height int
 
-	id int
-	name string
+	id      int
+	name    string
 	visible bool
 
 	x int

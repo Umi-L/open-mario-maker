@@ -1,14 +1,16 @@
 package animation
 
 import (
+	"fmt"
 	"github.com/EngoEngine/ecs"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/umi-l/open-mario-maker/geometry"
+	"github.com/umi-l/waloader"
 )
 
 type animationUpdateStorage struct {
 	*ecs.BasicEntity
-	*Animation
+	*waloader.Animation
 	*geometry.Transform
 }
 
@@ -16,7 +18,7 @@ type UpdateSystem struct {
 	Entities []animationUpdateStorage
 }
 
-func (a *UpdateSystem) Add(basic *ecs.BasicEntity, anim *Animation, trans *geometry.Transform) {
+func (a *UpdateSystem) Add(basic *ecs.BasicEntity, anim *waloader.Animation, trans *geometry.Transform) {
 	a.Entities = append(a.Entities, animationUpdateStorage{basic, anim, trans})
 }
 
@@ -35,12 +37,14 @@ func (a *UpdateSystem) Remove(basic ecs.BasicEntity) {
 
 func (a UpdateSystem) Update(dt float32) {
 	for _, entity := range a.Entities {
-		entity.updateTimer(dt)
+		entity.UpdateTimer(dt)
 	}
 }
 
 func (a UpdateSystem) Draw(screen *ebiten.Image) {
 	for _, entity := range a.Entities {
 		entity.Draw(screen, entity.Transform.Position.X, entity.Transform.Position.Y, entity.Transform.Rotation)
+		fmt.Printf("entity drawing: %+v\n", entity.Transform)
 	}
+	fmt.Print("Drawing done \n")
 }

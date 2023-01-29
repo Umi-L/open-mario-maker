@@ -1,0 +1,7 @@
+<atlas>
+	<tex n="atlas0" w="512" h="2048" >
+		<img n="tilemap" x="0" y="0" w="464" h="440" />
+		<img n="MarioSpriteSheet" x="0" y="441" w="80" h="608" />
+		<img n="MarioPlayButton" x="0" y="1050" w="128" h="48" />
+	</tex>
+</atlas>

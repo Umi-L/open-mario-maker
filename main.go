@@ -1,29 +1,24 @@
 package main
 
 import (
-	"fmt"
 	_ "image/png"
 	"log"
 	"time"
 
+	"embed"
 	"github.com/umi-l/open-mario-maker/animation"
 	"github.com/umi-l/open-mario-maker/entities"
 	gameui "github.com/umi-l/open-mario-maker/game_ui"
 	"github.com/umi-l/open-mario-maker/geometry"
-	"github.com/umi-l/open-mario-maker/gui"
-	"github.com/umi-l/open-mario-maker/gui_elements"
-	"github.com/umi-l/open-mario-maker/gui_update_params"
-	"github.com/umi-l/open-mario-maker/loader"
 	"github.com/umi-l/open-mario-maker/physics"
 	"github.com/umi-l/open-mario-maker/tiled"
 	. "github.com/umi-l/open-mario-maker/types"
 	"github.com/umi-l/open-mario-maker/utils"
-
-	"embed"
+	"github.com/umi-l/waloader"
+	"github.com/umi-l/yosui-ui/gui"
 
 	"github.com/EngoEngine/ecs"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 var world ecs.World
@@ -31,13 +26,6 @@ var world ecs.World
 var player entities.Player
 
 var dt func() time.Duration = utils.GetDt()
-
-var charSheet loader.Sheet
-var tilemapSheet loader.Sheet
-
-var playButtonImage *ebiten.Image
-
-var marioSwimmingAnimation animation.Animation
 
 var systems map[SystemIndex]interface{}
 
@@ -47,23 +35,10 @@ var testmap tiled.Map
 var res embed.FS
 
 // init
-func init() {
+func (g *Game) init() {
 
 	//systems map
 	systems = make(map[SystemIndex]interface{})
-
-	//resources
-	charSheet = loader.LoadSheet("MarioSpriteSheet.png", 16, 32)
-	marioSwimmingAnimation = animation.Load(&charSheet, 0, 5, 0.1)
-
-	tilemapSheet = loader.LoadSheet("resources/tilemap.png", 16, 16)
-
-	var err error
-	playButtonImage, _, err = ebitenutil.NewImageFromFile("resources/MarioPlayButton.png")
-
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	//ecs
 	world = ecs.World{}
@@ -112,6 +87,7 @@ func init() {
 
 type Game struct {
 	Gui   gameui.GameUI
+	Atlas map[string]waloader.Sprite
 	State GameState
 }
 
@@ -119,7 +95,7 @@ type Game struct {
 func (g *Game) Update() error {
 	world.Update(float32(dt().Seconds()))
 
-	g.Gui.Root.Update(gui_update_params.UpdateParams{})
+	g.Gui.Root.Update()
 
 	return nil
 }
@@ -155,36 +131,13 @@ func main() {
 	//title
 	ebiten.SetWindowTitle("Open Mario Maker")
 
+	//define empty game
 	game := Game{}
-	game.Gui.Root.Visible = true
 
-	//--main menu--
-	mainMenu := gui.NewContainer(gui.Transform{X: 0, Y: 0, WPercent: 1, HPercent: 1}, true)
-
-	//play button
-	playButton := gui_elements.NewButton(playButtonImage, func(params gui_update_params.ButtonUpdateParams) {
-		fmt.Println("Button Clicked")
-
-	})
-
-	trans := gui.MakeTransformWithImage(playButtonImage, gui.OriginCenter)
-
-	trans.XPercent = 0.5
-	trans.YPercent = 0.5
-
-	//add to main menu
-	mainMenu.AddChild(&playButton)
-
-	playButton.SetTransform(trans)
-
-	//add to gui
-	game.Gui.Root.AddChild(&mainMenu)
-
-	fmt.Printf("%+v\n", game.Gui)
-	fmt.Printf("%+v\n", mainMenu)
-	fmt.Printf("%+v\n", playButton)
-
-	//fmt.Printf("%+v\n", playButton)
+	//init all
+	game.InitAssets()
+	game.init()
+	game.initUI()
 
 	//run game and handle errors
 	if err := ebiten.RunGame(&game); err != nil {

@@ -1,15 +1,15 @@
 package tiled
 
 import (
+	"github.com/umi-l/waloader"
 	"log"
 	"strconv"
 	"strings"
 
 	"github.com/buger/jsonparser"
-	"github.com/umi-l/open-mario-maker/loader"
 )
 
-func ParseCsv(file string, sheet loader.Sheet) Map {
+func ParseCsv(file string, sheet waloader.Sheet) Map {
 
 	file = strings.ReplaceAll(file, "\n", ",")
 
@@ -19,7 +19,7 @@ func ParseCsv(file string, sheet loader.Sheet) Map {
 
 	for _, num := range strData {
 
-		if num == ""{
+		if num == "" {
 			continue
 		}
 
@@ -36,37 +36,37 @@ func ParseCsv(file string, sheet loader.Sheet) Map {
 	container := make([]TileLayer, 1)
 	container[0] = TileLayer{
 		TileData: data,
-		width: 40,
-		height: 30,
-		id: 0,
-		name: "csvmap (depricated)",
-		visible: true,
-		x: 0,
-		y: 0,
-	} 
+		width:    40,
+		height:   30,
+		id:       0,
+		name:     "csvmap (depricated)",
+		visible:  true,
+		x:        0,
+		y:        0,
+	}
 
 	return Map{
-		Sheet: sheet,
+		Sheet:      sheet,
 		TileLayers: container,
 	}
 }
 
-func ParseJson(file []byte, sheet loader.Sheet) Map {
+func ParseJson(file []byte, sheet waloader.Sheet) Map {
 
 	var TileLayers []TileLayer
 
 	jsonparser.ArrayEach(file, func(layerContainer []byte, dataType jsonparser.ValueType, offset int, err error) {
-        // log.Print(string(layerContainer))
+		// log.Print(string(layerContainer))
 
-        if val, _ := jsonparser.GetString(layerContainer, "type"); val == "tilelayer" {
+		if val, _ := jsonparser.GetString(layerContainer, "type"); val == "tilelayer" {
 
-        	// log.Print(jsonparser.Array)
+			// log.Print(jsonparser.Array)
 
-        	var data []int
+			var data []int
 
-        	jsonparser.ArrayEach(layerContainer, func(tileid []byte, dataType jsonparser.ValueType, offset int, err error) {
-        		// data = append(data, )
-        		value, err := strconv.Atoi(string(tileid))
+			jsonparser.ArrayEach(layerContainer, func(tileid []byte, dataType jsonparser.ValueType, offset int, err error) {
+				// data = append(data, )
+				value, err := strconv.Atoi(string(tileid))
 
 				if err != nil {
 					log.Print("Invalid Value In File!")
@@ -74,38 +74,38 @@ func ParseJson(file []byte, sheet loader.Sheet) Map {
 				}
 
 				data = append(data, value)
-        	}, "data")
+			}, "data")
 
-        	layer := TileLayer{
-        		TileData: data,
+			layer := TileLayer{
+				TileData: data,
 
-        		width: safeGetValueInt("width", layerContainer),
-        		height: safeGetValueInt("height", layerContainer),
+				width:  safeGetValueInt("width", layerContainer),
+				height: safeGetValueInt("height", layerContainer),
 
-        		x: safeGetValueInt("x", layerContainer),
-        		y: safeGetValueInt("y", layerContainer),
+				x: safeGetValueInt("x", layerContainer),
+				y: safeGetValueInt("y", layerContainer),
 
-        		id: safeGetValueInt("id", layerContainer),
+				id: safeGetValueInt("id", layerContainer),
 
-        		name: safeGetValueString("name", layerContainer),
-        		visible: safeGetValueBool("visible", layerContainer),
-       		}
+				name:    safeGetValueString("name", layerContainer),
+				visible: safeGetValueBool("visible", layerContainer),
+			}
 
-     		TileLayers = append(TileLayers, layer)
-        }
+			TileLayers = append(TileLayers, layer)
+		}
 
 	}, "layers")
 
 	return Map{
-		Sheet: sheet,
-		TileLayers:  TileLayers,
+		Sheet:      sheet,
+		TileLayers: TileLayers,
 	}
 }
 
 func safeGetValueInt(name string, json []byte) int {
 	val, err := jsonparser.GetInt(json, name)
 
-	if err != nil{
+	if err != nil {
 		log.Print("error parsing map file")
 		log.Fatal(err)
 	}
@@ -116,7 +116,7 @@ func safeGetValueInt(name string, json []byte) int {
 func safeGetValueString(name string, json []byte) string {
 	val, err := jsonparser.GetString(json, name)
 
-	if err != nil{
+	if err != nil {
 		log.Print("error parsing map file")
 		log.Fatal(err)
 	}
@@ -127,7 +127,7 @@ func safeGetValueString(name string, json []byte) string {
 func safeGetValueBool(name string, json []byte) bool {
 	val, err := jsonparser.GetBoolean(json, name)
 
-	if err != nil{
+	if err != nil {
 		log.Print("error parsing map file")
 		log.Fatal(err)
 	}

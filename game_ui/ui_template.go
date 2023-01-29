@@ -1,8 +1,8 @@
 package gameui
 
 import (
-	"github.com/umi-l/open-mario-maker/gui"
-	"github.com/umi-l/open-mario-maker/gui_elements"
+	"github.com/umi-l/yosui-ui/gui"
+	"github.com/umi-l/yosui-ui/widgets"
 )
 
 type GameUI struct {
@@ -11,5 +11,5 @@ type GameUI struct {
 }
 
 type MainMenuUI struct {
-	PlayButton gui_elements.GuiButton
+	PlayButton widgets.GuiButton
 }
