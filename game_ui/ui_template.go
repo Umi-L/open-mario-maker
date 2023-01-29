@@ -17,5 +17,7 @@ type MainMenuUI struct {
 }
 
 type EditorUI struct {
-	Root gui.Container
+	Root       gui.Container
+	TopPanel   gui.Element
+	TestButton widgets.GuiButton
 }

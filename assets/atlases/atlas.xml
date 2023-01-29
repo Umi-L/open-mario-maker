@@ -3,5 +3,6 @@
 		<img n="tilemap" x="0" y="0" w="464" h="440" />
 		<img n="MarioSpriteSheet" x="0" y="441" w="80" h="608" />
 		<img n="MarioPlayButton" x="0" y="1050" w="128" h="48" />
+		<img n="TopPanel" x="81" y="441" w="10" h="10" />
 	</tex>
 </atlas>
