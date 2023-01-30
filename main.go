@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/umi-l/open-mario-maker/gamestates"
 	"image/color"
 	_ "image/png"
 	"log"
@@ -67,7 +68,7 @@ func (game *Game) init() {
 type Game struct {
 	Gui   gameui.GameUI
 	Atlas map[string]waloader.Sprite
-	State GameState
+	State gamestates.GameState
 }
 
 // mainloop
