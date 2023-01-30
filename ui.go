@@ -36,7 +36,7 @@ func (game *Game) initUI() {
 	game.Gui.Editor.Trunk = gui.NewContainer(gui.Transform{X: 0, Y: 0, WPercent: 1, HPercent: 1}, false)
 
 	// make top panel
-	game.Gui.Editor.TopPanel = gui.MakeElement(topPanelImage)
+	game.Gui.Editor.TopPanel = widgets.MakePanel(topPanelImage)
 	game.Gui.Editor.TopPanel.SetTransform(gui.Transform{X: 0, Y: 0, WPercent: 1, HPercent: 0.1})
 
 	// add to Editor

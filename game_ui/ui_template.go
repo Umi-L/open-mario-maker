@@ -18,6 +18,6 @@ type MainMenuUI struct {
 
 type EditorUI struct {
 	Trunk      gui.Container
-	TopPanel   gui.Element
+	TopPanel   widgets.Panel
 	TestButton widgets.GuiButton
 }
