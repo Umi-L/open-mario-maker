@@ -1,7 +1,5 @@
 package types
 
-import "github.com/umi-l/open-mario-maker/animation"
-
 type SystemIndex int32
 
 const (
@@ -9,7 +7,3 @@ const (
 	Forces                      = 1
 	Gravity                     = 2
 )
-
-type PossibleSystems interface {
-	*animation.UpdateSystem
-}

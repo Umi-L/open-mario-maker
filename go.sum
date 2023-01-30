@@ -59,6 +59,13 @@ github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/umi-l/waloader v0.0.0-20230129025805-1859623542f1 h1:f/BXp5cWVbVpMYtYKR5GVDv9Kzw3vIgG3cvMWanMiME=
+github.com/umi-l/waloader v0.0.0-20230129025805-1859623542f1/go.mod h1:PI9eJMIxywidjw/MPtdZrAYzs5jrTnrh/hpYG6pzR7w=
+github.com/umi-l/yosui-ui v0.0.0-20230130033051-66152c3b95b6 h1:1fuC9eW4HRqUNnik19P4XWKVU4jkJfsjwyZd5WXEXQs=
+github.com/umi-l/yosui-ui v0.0.0-20230130033051-66152c3b95b6/go.mod h1:7lYPFHO/8glqfDceX38LCcB0wxNmTjx0Yk2JhNENLKI=
+github.com/wfranczyk/ento v0.1.0 h1:BMuty7VOn8qNp7EbUhlimQXnckuwrjuJSgJ46NFdk2E=
+github.com/wfranczyk/ento v0.1.0/go.mod h1:oiJdFEvu66RU8kZwEySB/xfizPLQ/maChXwYPxY3l9o=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.4.0/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
@@ -72,6 +79,8 @@ golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 h1:estk1glOnSVeJ9tdEZZc5mAMD
 golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56/go.mod h1:JhuoJpWY28nO4Vef9tZUw9qufEGTyX1+7lmHxV5q5G4=
 golang.org/x/exp/shiny v0.0.0-20230127193734-31bee513bff7 h1:wmxYNl0xCUxsQ6Xbrd+GGVegIajg0nk1ODgWQe35Rek=
 golang.org/x/exp/shiny v0.0.0-20230127193734-31bee513bff7/go.mod h1:UH99kUObWAZkDnWqppdQe5ZhPYESUw8I0zVV1uWBR+0=
+golang.org/x/exp/shiny v0.0.0-20230130200758-8bd7c9d05862 h1:ZX+dOM04XtF5le5vXQG/+i7g7d/v3syGTs8FVMIB+vY=
+golang.org/x/exp/shiny v0.0.0-20230130200758-8bd7c9d05862/go.mod h1:UH99kUObWAZkDnWqppdQe5ZhPYESUw8I0zVV1uWBR+0=
 golang.org/x/image v0.0.0-20190227222117-0694c2d4d067/go.mod h1:kZ7UVZpmo3dzQBMxlp+ypCbDeSB+sBbTgSJuh5dn5js=
 golang.org/x/image v0.0.0-20190703141733-d6a02ce849c9/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
 golang.org/x/image v0.0.0-20190802002840-cff245a6509b/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
