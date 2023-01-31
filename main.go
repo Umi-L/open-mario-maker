@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/umi-l/open-mario-maker/game"
+	"github.com/umi-l/open-mario-maker/objects"
 	_ "image/png"
 	"log"
 )
@@ -18,16 +19,17 @@ func main() {
 	ebiten.SetWindowTitle("Open Mario Maker")
 
 	//define empty game
-	game := game.Game{}
+	Game := game.Game{}
 
 	//init all
-	game.InitAssets()
-	//game.init()
-	game.InitECS()
-	game.InitUI()
+	Game.InitAssets()
+	Game.InitECS()
+	Game.InitUI()
+	game.InitStateMachine(&Game)
+	objects.Init(Game.Atlas)
 
 	//run game and handle errors
-	if err := ebiten.RunGame(&game); err != nil {
+	if err := ebiten.RunGame(&Game); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -1,9 +1,15 @@
 package game
 
-func RunStateMachine(state GameState, game *Game) {
+var editor Editor
+
+func InitStateMachine(game *Game) {
+	editor = MakeEditor(game)
+}
+
+func RunStateMachine(state GameState) {
 	switch state {
 	case MainMenu:
 	case Editing:
-		EditorUpdate(game)
+		editor.Update()
 	}
 }

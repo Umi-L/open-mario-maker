@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/umi-l/open-mario-maker/drawstack"
 	gameui "github.com/umi-l/open-mario-maker/game_ui"
 	"github.com/umi-l/open-mario-maker/types"
 	"github.com/umi-l/waloader"
@@ -15,8 +16,12 @@ type Game struct {
 	World *ento.World
 	State GameState
 
+	SelectedObject int
+
 	DeltaTime *types.DeltaTime
 	Screen    *types.Screen
+
+	drawStack [][]drawstack.DrawCall
 }
 
 // Update mainloop
@@ -25,7 +30,7 @@ func (game *Game) Update() error {
 
 	game.DeltaTime.Dt = 0.01666666666
 
-	RunStateMachine(game.State, game)
+	RunStateMachine(game.State)
 
 	return nil
 }
