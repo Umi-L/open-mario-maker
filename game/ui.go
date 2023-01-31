@@ -1,15 +1,14 @@
-package main
+package game
 
 import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/umi-l/open-mario-maker/gamestates"
 	"github.com/umi-l/yosui-ui"
 	"github.com/umi-l/yosui-ui/gui"
 	"github.com/umi-l/yosui-ui/widgets"
 )
 
-func (game *Game) initUI() {
+func (game *Game) InitUI() {
 	game.Gui.Root = yosui.MakeRootContainer(game.Layout(0, 0))
 
 	//--main menu--
@@ -21,7 +20,7 @@ func (game *Game) initUI() {
 		//play button
 		{
 			game.Gui.MainMenu.PlayButton = widgets.NewButton(playButtonImage, trans, func() {
-				game.State = gamestates.Editing
+				game.State = Editing
 				game.Gui.MainMenu.Trunk.Visible = false
 				game.Gui.Editor.Trunk.Visible = true
 
@@ -54,7 +53,7 @@ func (game *Game) initUI() {
 	}
 }
 
-func (game *Game) drawUi(screen *ebiten.Image) {
+func (game *Game) DrawUi(screen *ebiten.Image) {
 	//resize event
 	w, h := screen.Size()
 	game.Gui.Root.UpdateTransform(gui.Transform{X: 0, Y: 0, W: float32(w), H: float32(h)})

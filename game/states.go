@@ -1,4 +1,4 @@
-package gamestates
+package game
 
 type GameState int32
 

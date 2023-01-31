@@ -17,5 +17,6 @@ type AnimationUpdateSystem struct {
 }
 
 func (s *AnimationUpdateSystem) Update(entity *ento.Entity) {
+	s.Animation.UpdateTimer(s.DeltaTime.Dt)
 	s.Animation.Draw(s.Screen.Screen, s.Transform.X, s.Transform.Y, s.Transform.Rotation)
 }
