@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/umi-l/open-mario-maker/drawstack"
 	"github.com/umi-l/open-mario-maker/physics"
 	"github.com/umi-l/waloader"
@@ -22,9 +23,8 @@ func (tile SolidTile) OnCollision(other ObjectInterface) {
 	panic("implement me")
 }
 
-func (tile SolidTile) GetObject() Object {
-	//TODO implement me
-	panic("implement me")
+func (tile *SolidTile) GetObject() *Object {
+	return &tile.Object
 }
 
 func (tile SolidTile) Update(dt float32) {
@@ -37,11 +37,22 @@ func (tile SolidTile) Destroy() {
 	panic("implement me")
 }
 
-func (tile SolidTile) Draw() drawstack.DrawCall {
-	//TODO implement me
-	panic("implement me")
+func (tile *SolidTile) Clone() ObjectInterface {
+	u := *tile
+	return &u
 }
 
-func MakeSolidTile(sprite waloader.Sprite) SolidTile {
-	return SolidTile{sprite: sprite}
+func (tile SolidTile) Draw() drawstack.DrawCall {
+	return func(screen *ebiten.Image) {
+
+		op := ebiten.DrawImageOptions{}
+
+		op.GeoM.Translate(float64(tile.X), float64(tile.Y))
+
+		screen.DrawImage(tile.sprite.Image, &op)
+	}
+}
+
+func NewSolidTile(sprite waloader.Sprite) *SolidTile {
+	return &SolidTile{sprite: sprite}
 }

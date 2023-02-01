@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/EngoEngine/ecs v1.0.5
 	github.com/hajimehoshi/ebiten/v2 v2.4.16
+	github.com/huandu/go-clone v1.4.1
 	github.com/umi-l/waloader v0.0.0-20230129025805-1859623542f1
 	github.com/umi-l/yosui-ui v0.0.0-20230130033051-66152c3b95b6
 	github.com/wfranczyk/ento v0.1.0
@@ -13,7 +14,7 @@ require (
 require (
 	github.com/gabstv/ebiten-imgui v0.5.0 // indirect
 	github.com/inkyblackness/imgui-go/v4 v4.7.0 // indirect
-	golang.org/x/exp/shiny v0.0.0-20230130200758-8bd7c9d05862 // indirect
+	golang.org/x/exp/shiny v0.0.0-20230131160201-f062dba9d201 // indirect
 )
 
 require (

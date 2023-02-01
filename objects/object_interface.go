@@ -8,8 +8,9 @@ import (
 type ObjectInterface interface {
 	IsColliding(collider physics.Collider) bool
 	OnCollision(other ObjectInterface)
-	GetObject() Object
+	GetObject() *Object
 	Update(dt float32)
 	Destroy()
 	Draw() drawstack.DrawCall
+	Clone() ObjectInterface
 }

@@ -22,11 +22,20 @@ func (e *Editor) Update() {
 	}
 
 	if leftMouseDown {
-		e.Objects = append(e.Objects, objects.MakeObjectFromId(e.game.SelectedObject))
+		newTile := objects.MakeObjectFromId(e.game.SelectedObject)
+
+		mousePosX, mousePosY := ebiten.CursorPosition()
+
+		tileObject := newTile.GetObject()
+
+		tileObject.X = float32(mousePosX)
+		tileObject.Y = float32(mousePosY)
+
+		e.Objects = append(e.Objects, newTile)
 	}
 
 	for _, o := range e.Objects {
-
+		e.game.drawStack.Add(o.Draw(), o.GetObject().ZIndex)
 	}
 }
 

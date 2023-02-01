@@ -7,7 +7,7 @@ import (
 var objects []ObjectInterface
 
 func Init(atlas map[string]waloader.Sprite) {
-	register(MakeSolidTile(atlas["SolidBrick"]))
+	register(NewSolidTile(atlas["MarioPlayButton"]))
 }
 
 func register(object ObjectInterface) {

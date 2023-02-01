@@ -21,16 +21,17 @@ type Game struct {
 	DeltaTime *types.DeltaTime
 	Screen    *types.Screen
 
-	drawStack [][]drawstack.DrawCall
+	drawStack drawstack.DrawStack
 }
 
 // Update mainloop
 func (game *Game) Update() error {
+	RunStateMachine(game.State)
+
 	game.Gui.Root.Update()
 
+	//TODO: Make dt calculated per frame instead of assuming 60 fps
 	game.DeltaTime.Dt = 0.01666666666
-
-	RunStateMachine(game.State)
 
 	return nil
 }
@@ -50,6 +51,8 @@ func (game *Game) Draw(screen *ebiten.Image) {
 	//tiled.DrawMap(screen, testmap)
 
 	game.World.Update()
+
+	game.drawStack.Draw(screen)
 
 	game.DrawUi(screen)
 }

@@ -6,6 +6,8 @@ type Object struct {
 	Colliders []physics.Collider //array of property enum used to add to systems.
 
 	//position in tile space
-	x float32
-	y float32
+	X float32
+	Y float32
+
+	ZIndex int
 }
