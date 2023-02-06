@@ -42,12 +42,12 @@ func (tile *SolidTile) Clone() ObjectInterface {
 	return &u
 }
 
-func (tile SolidTile) Draw() drawstack.DrawCall {
+func (tile SolidTile) Draw(scale float32) drawstack.DrawCall {
 	return func(screen *ebiten.Image) {
 
 		op := ebiten.DrawImageOptions{}
 
-		op.GeoM.Translate(float64(tile.X), float64(tile.Y))
+		op.GeoM.Translate(float64(tile.ScreenPos.X), float64(tile.ScreenPos.Y))
 
 		screen.DrawImage(tile.sprite.Image, &op)
 	}

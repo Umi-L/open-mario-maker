@@ -3,9 +3,7 @@ module github.com/umi-l/open-mario-maker
 go 1.19
 
 require (
-	github.com/EngoEngine/ecs v1.0.5
 	github.com/hajimehoshi/ebiten/v2 v2.4.16
-	github.com/huandu/go-clone v1.4.1
 	github.com/umi-l/waloader v0.0.0-20230129025805-1859623542f1
 	github.com/umi-l/yosui-ui v0.0.0-20230130033051-66152c3b95b6
 	github.com/wfranczyk/ento v0.1.0

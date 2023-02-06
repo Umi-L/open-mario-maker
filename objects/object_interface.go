@@ -11,6 +11,6 @@ type ObjectInterface interface {
 	GetObject() *Object
 	Update(dt float32)
 	Destroy()
-	Draw() drawstack.DrawCall
+	Draw(scale float32) drawstack.DrawCall
 	Clone() ObjectInterface
 }
