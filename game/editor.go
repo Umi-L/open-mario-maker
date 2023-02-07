@@ -33,7 +33,8 @@ type Editor struct {
 	MousePos          geometry.Point
 	LastFrameMousePos geometry.Point
 
-	ScrollAmount geometry.Point
+	ScrollAmount      geometry.Point
+	ScrollSensitivity float64
 }
 
 func (e *Editor) Update() {
@@ -51,7 +52,7 @@ func (e *Editor) Update() {
 
 		e.Objects = append(e.Objects, newTile)
 	} else if e.ScrollAmount.Y != 0 {
-		e.Grid.Size += int(e.ScrollAmount.Y)
+		e.Grid.Size = int(e.ScrollAmount.Y) + e.Grid.DefaultSize
 
 		if e.Grid.Size <= 0 {
 			e.Grid.Size = 1
@@ -61,7 +62,7 @@ func (e *Editor) Update() {
 	for _, o := range e.Objects {
 		e.SetObjectScreenPos(o)
 
-		e.game.drawStack.Add(o.Draw(float32(e.Grid.Size)/float32(e.Grid.DefaultSize)), o.GetObject().ZIndex)
+		e.game.drawStack.Add(o.Draw(1/float32(e.Grid.GetSizeValue())), o.GetObject().ZIndex)
 	}
 
 	//change last frame
@@ -71,10 +72,14 @@ func (e *Editor) Update() {
 func (e *Editor) FindScreenPositionOnGrid(point geometry.Point) geometry.Point {
 	// tile position is mouse position (accounting for offset) / tile size floored.
 
-	return geometry.Point{
-		X: math.Floor((point.X/e.Grid.GetSizeValue() - e.Grid.Offset.X) / float64(e.Grid.Size)),
-		Y: math.Floor((point.Y/e.Grid.GetSizeValue() - e.Grid.Offset.Y) / float64(e.Grid.Size)),
+	gridPos := geometry.Point{
+		X: math.Floor((point.X/(1/e.Grid.GetSizeValue()) - e.Grid.Offset.X) / float64(e.Grid.Size)),
+		Y: math.Floor((point.Y/(1/e.Grid.GetSizeValue()) - e.Grid.Offset.Y) / float64(e.Grid.Size)),
 	}
+
+	fmt.Printf("gridPos: %+v \n mousePos: %+v \n", gridPos, e.MousePos)
+
+	return gridPos
 }
 
 func (e *Editor) SetObjectScreenPos(oInterface objects.ObjectInterface) {
@@ -99,7 +104,7 @@ func (e *Editor) UpdateInputs() {
 
 	wheelX, wheelY := ebiten.Wheel()
 
-	e.ScrollAmount = geometry.Point{X: wheelX, Y: wheelY}
+	e.ScrollAmount = e.ScrollAmount.Add(geometry.Point{X: wheelX * e.ScrollSensitivity, Y: wheelY * e.ScrollSensitivity})
 
 	var pressed []ebiten.Key
 	pressed = inpututil.AppendPressedKeys(pressed)
@@ -126,5 +131,6 @@ func MakeEditor(game *Game) Editor {
 	editor.LastFrameMousePos = geometry.Point{X: float64(mousePosX), Y: float64(mousePosY)}
 	editor.Grid.Size = 16
 	editor.Grid.DefaultSize = 16
+	editor.ScrollSensitivity = 0.1
 	return editor
 }

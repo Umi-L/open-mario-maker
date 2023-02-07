@@ -47,7 +47,7 @@ func (tile SolidTile) Draw(scale float32) drawstack.DrawCall {
 
 		op := ebiten.DrawImageOptions{}
 
-		op.GeoM.Translate(float64(tile.ScreenPos.X), float64(tile.ScreenPos.Y))
+		op.GeoM.Translate(float64(tile.ScreenPos.X)*float64(scale), float64(tile.ScreenPos.Y)*float64(scale))
 		op.GeoM.Scale(float64(scale), float64(scale))
 
 		screen.DrawImage(tile.sprite.Image, &op)
