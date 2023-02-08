@@ -3,9 +3,11 @@ package game
 import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/umi-l/open-mario-maker/geometry"
 	"github.com/umi-l/open-mario-maker/objects"
+	"image/color"
 	"math"
 )
 
@@ -13,10 +15,6 @@ type Grid struct {
 	Size        int
 	DefaultSize int
 	Offset      geometry.Point
-}
-
-func (g Grid) GetSizeValue() float64 {
-	return float64(g.Size) / float64(g.DefaultSize)
 }
 
 type Editor struct {
@@ -60,35 +58,70 @@ func (e *Editor) Update() {
 	}
 
 	for _, o := range e.Objects {
-		e.SetObjectScreenPos(o)
+		o.GetObject().ScreenPos = e.GridSpacePointToScreenSpace(o.GetObject().Pos)
 
-		e.game.drawStack.Add(o.Draw(1/float32(e.Grid.GetSizeValue())), o.GetObject().ZIndex)
+		// find scale that makes the object fit in the grid
+		scale := float32(e.Grid.Size) / float32(e.Grid.DefaultSize)
+
+		e.game.drawStack.Add(o.Draw(scale), o.GetObject().ZIndex)
 	}
 
+	// get screen size
+	screenWidth, screenHeight := e.game.Screen.Screen.Size()
+
+	// draw grid using vertical and horizontal lines using draw stack in transparent white
+	e.game.drawStack.Add(func(screen *ebiten.Image) {
+		for i := 0; i < screenWidth; i += e.Grid.Size {
+			ebitenutil.DrawLine(screen, float64(i), 0, float64(i), float64(screenHeight), color.White)
+		}
+
+		for i := 0; i < screenHeight; i += e.Grid.Size {
+			ebitenutil.DrawLine(screen, 0, float64(i), float64(screenWidth), float64(i), color.White)
+		}
+	}, 0)
+
+	// debug draw text of grid size with draw stack
+	e.game.drawStack.Add(func(screen *ebiten.Image) {
+		ebitenutil.DebugPrint(screen, fmt.Sprintf("grid size: %d", e.Grid.Size))
+	}, 0)
 	//change last frame
 	e.LastFrameMousePos = e.MousePos
 }
 
 func (e *Editor) FindScreenPositionOnGrid(point geometry.Point) geometry.Point {
-	// tile position is mouse position (accounting for offset) / tile size floored.
+	//get point in screen space and then convert to grid space
 
-	gridPos := geometry.Point{
-		X: math.Floor((point.X/(1/e.Grid.GetSizeValue()) - e.Grid.Offset.X) / float64(e.Grid.Size)),
-		Y: math.Floor((point.Y/(1/e.Grid.GetSizeValue()) - e.Grid.Offset.Y) / float64(e.Grid.Size)),
+	//get point in screen space
+	point = point.Sub(e.Grid.Offset)
+
+	//convert to grid space
+	point = point.DivF(float64(e.Grid.Size))
+
+	//round to the nearest grid point
+	point = geometry.Point{
+		X: math.Round(point.X),
+		Y: math.Round(point.Y),
 	}
 
-	fmt.Printf("gridPos: %+v \n mousePos: %+v \n", gridPos, e.MousePos)
+	// log values
+	fmt.Printf("point: %+v \n", point)
+	fmt.Printf("offset: %+v \n", e.Grid.Offset)
+	fmt.Printf("grid size: %+v \n", e.Grid.Size)
 
-	return gridPos
+	// log mouse position
+	fmt.Printf("mouse pos: %+v \n", e.MousePos)
+
+	return point
 }
 
-func (e *Editor) SetObjectScreenPos(oInterface objects.ObjectInterface) {
-	object := oInterface.GetObject()
+func (e *Editor) GridSpacePointToScreenSpace(point geometry.Point) geometry.Point {
+	//convert to screen space
+	point = point.MulF(float64(e.Grid.Size))
 
-	object.ScreenPos = geometry.Point{
-		X: object.Pos.X*float64(e.Grid.Size) + e.Grid.Offset.X,
-		Y: object.Pos.Y*float64(e.Grid.Size) + e.Grid.Offset.Y,
-	}
+	//add offset
+	point = point.Add(e.Grid.Offset)
+
+	return point
 }
 
 func (e *Editor) UpdateInputs() {
