@@ -38,10 +38,10 @@ type Editor struct {
 func (e *Editor) Update() {
 	e.UpdateInputs()
 
-	if e.leftMouseDown && e.IsKeyPressed("Shift") {
+	if e.leftMouseDown && e.IsKeyPressed("Shift") { // if shift is pressed and left mouse is down, scroll the grid
 		e.Grid.Offset = e.Grid.Offset.Add(e.MousePos.Sub(e.LastFrameMousePos))
 		fmt.Printf("scrolling to %+v \n", e.Grid.Offset)
-	} else if e.leftMouseDown {
+	} else if e.leftMouseDown { // if just clicking add object to the grid
 		newTile := objects.MakeObjectFromId(e.game.SelectedObject)
 
 		tileObject := newTile.GetObject()
@@ -49,7 +49,7 @@ func (e *Editor) Update() {
 		tileObject.Pos = e.FindScreenPositionOnGrid(e.MousePos)
 
 		e.Objects = append(e.Objects, newTile)
-	} else if e.ScrollAmount.Y != 0 {
+	} else if e.ScrollAmount.Y != 0 { // if scrolling scale the grid
 		e.Grid.Size = int(e.ScrollAmount.Y) + e.Grid.DefaultSize
 
 		if e.Grid.Size <= 0 {
@@ -65,20 +65,6 @@ func (e *Editor) Update() {
 
 		e.game.drawStack.Add(o.Draw(scale), o.GetObject().ZIndex)
 	}
-
-	// get screen size
-	screenWidth, screenHeight := e.game.Screen.Screen.Size()
-
-	// draw grid using vertical and horizontal lines using draw stack in transparent white
-	e.game.drawStack.Add(func(screen *ebiten.Image) {
-		for i := 0; i < screenWidth; i += e.Grid.Size {
-			ebitenutil.DrawLine(screen, float64(i), 0, float64(i), float64(screenHeight), color.White)
-		}
-
-		for i := 0; i < screenHeight; i += e.Grid.Size {
-			ebitenutil.DrawLine(screen, 0, float64(i), float64(screenWidth), float64(i), color.White)
-		}
-	}, 0)
 
 	// debug draw text of grid size with draw stack
 	e.game.drawStack.Add(func(screen *ebiten.Image) {
@@ -103,25 +89,40 @@ func (e *Editor) FindScreenPositionOnGrid(point geometry.Point) geometry.Point {
 		Y: math.Round(point.Y),
 	}
 
-	// log values
-	fmt.Printf("point: %+v \n", point)
-	fmt.Printf("offset: %+v \n", e.Grid.Offset)
-	fmt.Printf("grid size: %+v \n", e.Grid.Size)
-
-	// log mouse position
-	fmt.Printf("mouse pos: %+v \n", e.MousePos)
-
 	return point
 }
 
 func (e *Editor) GridSpacePointToScreenSpace(point geometry.Point) geometry.Point {
 	//convert to screen space
-	point = point.MulF(float64(e.Grid.Size))
+	point = point.MulF(float64(e.Grid.DefaultSize))
 
 	//add offset
 	point = point.Add(e.Grid.Offset)
 
 	return point
+}
+
+func (e *Editor) DrawGrid() {
+	// get screen size
+	screenWidth, screenHeight := e.game.Screen.Screen.Size()
+
+	// calculate the offset of a single grid square
+	offset := geometry.Point{
+		X: math.Mod(float64(e.Grid.Offset.X), float64(e.Grid.Size)),
+		Y: math.Mod(float64(e.Grid.Offset.Y), float64(e.Grid.Size)),
+	}
+
+	// draw grid using vertical and horizontal lines using draw stack accounting for scale & offset
+	e.game.drawStack.Add(func(screen *ebiten.Image) {
+
+		for i := 0; i < screenWidth; i += e.Grid.Size {
+			ebitenutil.DrawLine(screen, float64(i)+offset.X, offset.Y, float64(i)+offset.X, float64(screenHeight)+offset.Y, color.RGBA{255, 255, 255, 100})
+		}
+
+		for i := 0; i < screenHeight; i += e.Grid.Size {
+			ebitenutil.DrawLine(screen, offset.X, float64(i)+offset.Y, float64(screenWidth)+offset.X, float64(i)+offset.Y, color.RGBA{255, 255, 255, 100})
+		}
+	}, 0)
 }
 
 func (e *Editor) UpdateInputs() {
